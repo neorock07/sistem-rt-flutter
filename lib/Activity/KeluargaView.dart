@@ -1,6 +1,8 @@
 import "package:anim_search_bar/anim_search_bar.dart";
 import "package:flutter/material.dart";
 import "package:flutter_screenutil/flutter_screenutil.dart";
+import "package:get/get.dart";
+import "package:sistem_rt/Activity/AddNewKeluarga.dart";
 
 class KeluargaView extends StatefulWidget {
   const KeluargaView({Key? key}) : super(key: key);
@@ -40,7 +42,9 @@ class _KeluargaViewState extends State<KeluargaView> {
               Padding(
                 padding: EdgeInsets.only(right: 10.w),
                 child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Get.to(()=> const AddNewKeluarga());
+                    },
                     style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(5.h)),

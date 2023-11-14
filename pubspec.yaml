@@ -44,6 +44,8 @@ dependencies:
   google_mlkit_text_recognition: ^0.11.0
   permission_handler: ^11.0.1
   anim_search_bar: ^2.0.3
+  image_picker: ^1.0.4
+  path_provider: ^2.1.1
 
 dev_dependencies:
   flutter_test:
@@ -66,7 +68,15 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
-
+  assets:
+    - assets/image/family.png
+    - assets/image/ktp_border.png
+    # - images/a_dot_ham.jpeg
+  fonts:
+     - family: Rubik
+       fonts:
+         - asset: assets/fonts/Rubik-Regular.ttf
+         - asset: assets/fonts/Rubik-Bold.ttf
 
 flutter_icons:
   android: "launcher_icon"
@@ -76,10 +86,7 @@ flutter_icons:
 
 
   # To add assets to your application, add an assets section, like this:
-  assets:
-    - assets/image/family.png
-    # - images/a_dot_ham.jpeg
-
+  
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 
@@ -91,11 +98,7 @@ flutter_icons:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  fonts:
-     - family: Rubik
-       fonts:
-         - asset: assets/fonts/Rubik-Regular.ttf
-         - asset: assets/fonts/Rubik-Bold.ttf
+  
   #         style: italic
   #   - family: Trajan Pro
   #     fonts:
