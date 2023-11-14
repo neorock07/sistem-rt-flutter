@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:sistem_rt/Activity/Splashscreen.dart';
+import 'package:sistem_rt/Bloc/bloc/obscure_bloc_bloc.dart';
 
 void main() {
-  runApp(
-    const MyApp()
-    );
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -15,22 +16,21 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-      designSize: const Size(360, 690),
-      minTextAdapt: true,
-      splitScreenMode: true,
-      builder: (_, child){
-        return MaterialApp(
-        title: 'Sistem RT',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromRGBO(23, 78, 171, 1.0)),
-          useMaterial3: true,
-        
-        ),
-        home: child,
-      ); 
-      },
-      child: const Splashscreen()  
-    );
+        designSize: const Size(360, 690),
+        minTextAdapt: true,
+        splitScreenMode: true,
+        builder: (_, child) {
+          return GetMaterialApp(
+            title: 'SIRUMAGA',
+              debugShowCheckedModeBanner: false,
+              theme: ThemeData(
+                colorScheme: ColorScheme.fromSeed(
+                    seedColor: const Color.fromRGBO(23, 78, 171, 1.0)),
+                useMaterial3: true,
+              ),
+              home: child,
+          );
+        },
+        child: const Splashscreen());
   }
 }

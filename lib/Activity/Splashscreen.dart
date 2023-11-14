@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:sistem_rt/Activity/Login.dart';
+import 'package:sistem_rt/Activity/Menu.dart';
 import 'package:sistem_rt/Activity/Register.dart';
 
 class Splashscreen extends StatefulWidget {
@@ -19,7 +21,7 @@ class _SplashscreenState extends State<Splashscreen> with SingleTickerProviderSt
 
     Future.delayed(const Duration(seconds: 3), (){
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const Register())
+        MaterialPageRoute(builder: (_) => Menu())
         );
     });
   }
@@ -41,7 +43,7 @@ class _SplashscreenState extends State<Splashscreen> with SingleTickerProviderSt
       body: Align(
         alignment: Alignment.center,
         child: Text(
-          "Sistem RT",
+          "SIRUMAGA",
           style: TextStyle(
             fontFamily: "Rubik",
             color: Colors.white,

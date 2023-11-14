@@ -1,24 +1,24 @@
-import 'dart:math';
+import "package:flutter/material.dart";
+import "package:flutter_screenutil/flutter_screenutil.dart";
+import "package:get/get.dart";
 
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
-import 'package:sistem_rt/Bloc/bloc/obscure_bloc_bloc.dart';
-import 'package:sistem_rt/Controller/ObscureController.dart';
+import "../Controller/ObscureController.dart";
+// import "Register.dart";
 
-class Register extends StatefulWidget {
-  const Register({Key? key}) : super(key: key);
+class Login extends StatefulWidget {
+Login({ Key? key }) : super(key: key);
 
   @override
-  _RegisterState createState() => _RegisterState();
+  State<Login> createState() => _LoginState();
 }
 
-class _RegisterState extends State<Register> {
+class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
-  var delok = false;
+
+  var delok = true.obs;
+
   final ObscureController obscureController = Get.put(ObscureController());
-  
+
   Column ViewRegister(BuildContext context, {String? msg, String? btn_msg}) {
     return Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -77,18 +77,19 @@ class _RegisterState extends State<Register> {
                                 hintText: "Password",
                                 suffixIcon: IconButton(
                                     onPressed: () {
-                                      obscureController.changeCondition();
-                                      print("iki coeg : ${obscureController.isVisible.value}");
+                                      // obscureController.changeCondition();
+                                      delok.value = !delok.value;
+                                      print("iki coeg : ${delok.value}");
                                       // delok = obscureController.isVisible.value;
                                       setState(() {
                                         
                                       });
                                     },
                                     // onPressed: isOpen,
-                                    icon: Icon(obscureController.isVisible.value == true
+                                    icon: Icon(delok.value == true
                                         ? Icons.lock_open
                                         : Icons.visibility_off))),
-                            obscureText: obscureController.isVisible.value ,
+                            obscureText: delok.value ,
                             style: const TextStyle(fontFamily: "Rubik"),
                           ),
                         ),
@@ -131,19 +132,15 @@ class _RegisterState extends State<Register> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context){
     return Scaffold(
-      backgroundColor: Colors.white,
       body: SingleChildScrollView(
-        child: ViewRegister(context, msg: "Silahkan registrasi", btn_msg: "Daftar" ),
+        child: ViewRegister(
+          context, 
+          msg: "Silahkan Login",
+          btn_msg: "Login"
+        ),
       ),
     );
   }
-
-  
-  // void isOpen() {
-  //   setState(() {
-  //     delok = !delok;
-  //   });
-  // }
 }
