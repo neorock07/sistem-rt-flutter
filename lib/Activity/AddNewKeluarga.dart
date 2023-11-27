@@ -19,7 +19,8 @@ class AddNewKeluarga extends StatefulWidget {
 class _AddNewKeluargaState extends State<AddNewKeluarga> {
   CameraController? _camController;
   final textRecognizer = TextRecognizer(script: TextRecognitionScript.latin);
-  
+  bool condition = true;
+
   Future<void> initCamera() async {
     var cameras = await availableCameras();
     _camController = CameraController(cameras[0], ResolutionPreset.medium);
@@ -61,7 +62,7 @@ class _AddNewKeluargaState extends State<AddNewKeluarga> {
           future: initCamera(),
           builder: (_, snapshot) => (snapshot.connectionState ==
                   ConnectionState.done)
-              ? Column(
+              ? (condition == true)? Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Align(
@@ -86,7 +87,9 @@ class _AddNewKeluargaState extends State<AddNewKeluarga> {
                         Align(
                           alignment: Alignment.topCenter,
                           child: SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.6/_camController!.value.aspectRatio,
+                            height: MediaQuery.of(context).size.height *
+                                0.6 /
+                                _camController!.value.aspectRatio,
                             width: MediaQuery.of(context).size.width * 0.9,
                             child: CameraPreview(_camController!),
                           ),
@@ -110,48 +113,61 @@ class _AddNewKeluargaState extends State<AddNewKeluarga> {
                       child: Row(
                         children: [
                           const Icon(
-                            Icons.warning, 
+                            Icons.warning,
                             color: Colors.orange,
                           ),
-                          Text("Tempatkan KTP pada area yang tersedia!", 
+                          Text(
+                            "Tempatkan KTP pada area yang tersedia!",
                             style: TextStyle(
-                              color: Colors.grey,
-                              fontFamily: "Rubik",
-                              fontSize: 15.sp
-                            ),
+                                color: Colors.grey,
+                                fontFamily: "Rubik",
+                                fontSize: 15.sp),
                           )
                         ],
                       ),
                     )
                   ],
-                )
+                ) : const CircularProgressIndicator()
               : const Center(child: CircularProgressIndicator())),
-       floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          if(!_camController!.value.isTakingPicture){
-              String result = await takePicture();
-              log(
-                "$result"
-              );
-              final file = File(result);
-              final inputImage = InputImage.fromFile(file);
-              final teks = await textRecognizer.processImage(inputImage);
-              List<String> fg = teks.text.toString().split("\n").toList();
-              log(
-                "hasil : ${fg}"
-              );
+          if (!_camController!.value.isTakingPicture) {
+            String result = await takePicture();
+            log("$result");
+            final file = File(result);
+            final inputImage = InputImage.fromFile(file);
+            final teks = await textRecognizer.processImage(inputImage);
+            List<String> fg = teks.text.toString().split("\n").toList();
             // ignore: use_build_context_synchronously
-            await Navigator.push(context,
-             MaterialPageRoute(builder: ((context) => ResultScan(text: fg,))));  
+            log("${fg.length}");
+            condition = false;
+            if (fg.length > 1) {
+              condition = true;
+              // ignore: use_build_context_synchronously
+              await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: ((context) => ResultScan(
+                            text: fg,
+                          ))));
+            } else {
+              // condition = true;
+              const AlertDialog(
+                icon: Icon(Icons.warning_amber),
+                title: Text(
+                  "Kesalahan format, pastikan foto adalah KTP",
+                  style: TextStyle(color: Colors.black, fontFamily: "Rubik"),
+                ),
+              );
+            }
           }
         },
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(50.h)
-        ),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(50.h)),
         splashColor: Color.fromRGBO(194, 216, 252, 1),
         child: const Icon(Icons.camera),
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,       
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }

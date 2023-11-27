@@ -46,6 +46,8 @@ dependencies:
   anim_search_bar: ^2.0.3
   image_picker: ^1.0.4
   path_provider: ^2.1.1
+  intl: ^0.18.1
+  animated_custom_dropdown: ^2.0.0
 
 dev_dependencies:
   flutter_test:
@@ -71,6 +73,7 @@ flutter:
   assets:
     - assets/image/family.png
     - assets/image/ktp_border.png
+    - assets/image/logo.png
     # - images/a_dot_ham.jpeg
   fonts:
      - family: Rubik

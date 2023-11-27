@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
         splitScreenMode: true,
         builder: (_, child) {
           return GetMaterialApp(
-            title: 'SIRUMAGA',
+            title: 'SIFORA',
               debugShowCheckedModeBanner: false,
               theme: ThemeData(
                 colorScheme: ColorScheme.fromSeed(

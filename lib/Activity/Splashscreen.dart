@@ -42,14 +42,19 @@ class _SplashscreenState extends State<Splashscreen> with SingleTickerProviderSt
       ),
       body: Align(
         alignment: Alignment.center,
-        child: Text(
-          "SIRUMAGA",
-          style: TextStyle(
-            fontFamily: "Rubik",
-            color: Colors.white,
-            fontSize: 25.sp,
-            fontWeight: FontWeight.bold
-          ),),
+        child: Column(
+          children: [
+            Image.asset("assets/image/logo.png", fit: BoxFit.cover),
+            Text(
+              "SIFORA",
+              style: TextStyle(
+                fontFamily: "Rubik",
+                color: Colors.white,
+                fontSize: 25.sp,
+                fontWeight: FontWeight.bold
+              ),),
+          ],
+        ),
       ),
     );
   }
