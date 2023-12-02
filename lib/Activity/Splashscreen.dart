@@ -1,9 +1,15 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sistem_rt/Activity/Login.dart';
 import 'package:sistem_rt/Activity/Menu.dart';
 import 'package:sistem_rt/Activity/Register.dart';
+
+import '../Controller/LoginController/PrefController.dart';
 
 class Splashscreen extends StatefulWidget {
   const Splashscreen({ Key? key }) : super(key: key);
@@ -13,15 +19,25 @@ class Splashscreen extends StatefulWidget {
 }
 
 class _SplashscreenState extends State<Splashscreen> with SingleTickerProviderStateMixin {
+
+  var prefController = Get.put(PrefController());
+  var isEmail;
   
+  Future<void> shared() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    isEmail = pref.getString("email");
+  }
+ 
+
   @override
   void initState() {
+  
+    shared();
     super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
-
     Future.delayed(const Duration(seconds: 3), (){
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => Menu())
+       Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => (isEmail != null )? Menu() : Login())
         );
     });
   }

@@ -52,8 +52,6 @@ class _ResultScanState extends State<ResultScan> {
         }
         log("${widget.text![i]} -> $i");
       }
-
-      //rt dan rw
     } catch (e) {
       log(e.toString());
     }
@@ -81,25 +79,9 @@ class _ResultScanState extends State<ResultScan> {
     super.initState();
   }
 
-// nikController =
-//     namaController = TextEditingController();
-//     tglController = TextEditingController();
-//     kelaminController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
-    // RowKtp(label: "Negara", input: "INDONESIA"),
-    //                 RowKtp(label: "Provinsi", input: "${text![11]}"),
-    //                 RowKtp(label: "Kota/Kabupaten", input: "${text![12]}"),
-    //                 RowKtp(label: "Kecamatan", input: "${text![22]}"),
-    //                 RowKtp(label: "Kelurahan", input: "${text![21].split(':')[1]}"),
-    //                 RowKtp(label: "Alamat(RT/RW)", input: "${text![20].split(':')[1]}, ${text![19].split(':')[1]}")
-
-    // nikController.text = widget.text![9];
-    // namaController.text = widget.text![16];
-    // tglController.text = widget.text![9];
-    // kelaminController.text = widget.text![9];
-
+    
     return Scaffold(
       appBar: AppBar(
         title: const Text(
