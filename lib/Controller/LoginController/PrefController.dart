@@ -10,6 +10,12 @@ class PrefController extends GetxController {
     await pref.setString("password", password!);
     await pref.setString("role", role!);
     await pref.setString("token", token!);
+    await pref.setString("refreshToken", refreshToken!);
+  }
+  Future<void> saveNewToken({String? token, String? refreshToken}) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    await pref.setString("token", token!);
+    await pref.setString("refreshToken", refreshToken!);
   }
 
   Future<String?> getToken() async{

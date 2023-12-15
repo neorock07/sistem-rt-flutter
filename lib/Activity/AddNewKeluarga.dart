@@ -1,6 +1,6 @@
 import "dart:developer";
 import "dart:io";
-
+import "package:get/get.dart";
 import "package:camera/camera.dart";
 import "package:flutter/material.dart";
 import "package:flutter_screenutil/flutter_screenutil.dart";
@@ -19,7 +19,7 @@ class AddNewKeluarga extends StatefulWidget {
 class _AddNewKeluargaState extends State<AddNewKeluarga> {
   CameraController? _camController;
   final textRecognizer = TextRecognizer(script: TextRecognitionScript.latin);
-  bool condition = true;
+  var condition = true.obs;
 
   Future<void> initCamera() async {
     var cameras = await availableCameras();
@@ -140,9 +140,9 @@ class _AddNewKeluargaState extends State<AddNewKeluarga> {
             List<String> fg = teks.text.toString().split("\n").toList();
             // ignore: use_build_context_synchronously
             log("${fg.length}");
-            condition = false;
+            condition.value = false;
             if (fg.length > 1) {
-              condition = true;
+              condition.value = true;
               // ignore: use_build_context_synchronously
               await Navigator.push(
                   context,

@@ -18,7 +18,7 @@ class RegisterController extends GetxController {
       {String? kk, String? email, String? password, String? username, String? token}) async {
     try {
       var response = await http.post(
-          Uri.parse("https://${ipAdd.getIp()}/api/v1/auth/register"),
+          Uri.parse("${ipAdd.getType()}://${ipAdd.getIp()}/api/v1/auth/register"),
           headers: {
             "content-type": "application/json",
              'Authorization': 'Bearer $token'

@@ -4,6 +4,11 @@ import "package:flutter/material.dart";
 import "package:flutter_screenutil/flutter_screenutil.dart";
 import "package:get/get.dart";
 import 'package:intl/intl.dart';
+import "package:sistem_rt/API/Model/AnggotaModel/AnggotaModel.dart";
+import "package:sistem_rt/Activity/KeluargaView.dart";
+import "package:sistem_rt/Controller/AnggotaController/DataDiriController.dart";
+import "package:sistem_rt/Controller/DataWilayah/WilayahController.dart";
+import "package:sistem_rt/Controller/LoginController/PrefController.dart";
 import "package:sistem_rt/Controller/TextFieldController.dart";
 import 'Partials/BtmSheet.dart';
 
@@ -24,12 +29,21 @@ class _ResultScanState extends State<ResultScan> {
   var kawinController;
   var alamatController;
   var kodeController;
+  var provController;
+  var kotaController;
+  var kecamatanController;
+  var kelurahanController;
+  var kkController = TextEditingController();
+  var hpController = TextEditingController();
 
   var txtKelaminController = Get.put(RadioButtonPilih());
   var txtKawinController = Get.put(RadioButtonPilih());
   var txtCapitalController = Get.put(CapitalController());
   var txtClearController = Get.put(ClearFieldController());
   var txtSelectDateController = Get.put(SelectTextController());
+  var simpanController = Get.put(DataDiriController());
+  var prefController = Get.put(PrefController());
+  var wilayahController = Get.put(WilayahController());
 
   var rtController;
   var rwController;
@@ -37,6 +51,7 @@ class _ResultScanState extends State<ResultScan> {
   String? selectedKota;
   String? selectedKecamatan;
   String? selectedKelurahan;
+  String? selectedPekerjaan;
   String? rt;
   String? rw;
   var initTime;
@@ -69,19 +84,41 @@ class _ResultScanState extends State<ResultScan> {
     kelaminController =
         TextEditingController(text: widget.text![18].substring(0, 1));
     kawinController = (widget.text![24].substring(0, 1) == "B")
-        ? TextEditingController(text: "BELUM KAWIN`")
+        ? TextEditingController(text: "BELUM KAWIN")
         : TextEditingController(text: "KAWIN");
     initTime = widget.text![17].split(",")[1].trim().split("-");
     selectedProvince = widget.text![11].substring(8);
+    provController = TextEditingController(text: selectedProvince);
     selectedKota = widget.text![12].substring(5);
+    kotaController = TextEditingController(text: selectedKota);
     selectedKecamatan = widget.text![22];
+    kecamatanController = TextEditingController(text: selectedKecamatan);
     selectedKelurahan = widget.text![21];
+    kelurahanController = TextEditingController(text: selectedKelurahan);
+    switch (widget.text![25].substring(0,1)) {
+      case "PE":
+         selectedPekerjaan = "PELAJAR"; 
+        break;
+      case "BU":
+         selectedPekerjaan = "BURUH"; 
+        break;
+      case "KA":
+         selectedPekerjaan = "KARYAWAN SWASTA"; 
+        break;
+      case "PN":
+         selectedPekerjaan = "PNS"; 
+        break;        
+      case "WI":
+         selectedPekerjaan = "WIRASWASTA"; 
+        break;
+
+    }
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -127,6 +164,14 @@ class _ResultScanState extends State<ResultScan> {
                           children: [
                             TxtField(
                               context,
+                              label: "KK",
+                              controller: kkController,
+                            ),
+                            SizedBox(
+                              height: 5.h,
+                            ),
+                            TxtField(
+                              context,
                               label: "NIK",
                               init: widget.text![9],
                               controller: nikController,
@@ -138,6 +183,13 @@ class _ResultScanState extends State<ResultScan> {
                                 label: "Nama Lengkap",
                                 init: widget.text![16],
                                 controller: namaController),
+                            SizedBox(
+                              height: 5.h,
+                            ),
+                            TxtField(context,
+                                label: "No.Hp",
+                                keyboardType: TextInputType.phone,
+                                controller: hpController),
                             SizedBox(
                               height: 5.h,
                             ),
@@ -165,6 +217,14 @@ class _ResultScanState extends State<ResultScan> {
                                 controllerTxt: txtKawinController,
                                 init: widget.text![24].substring(0),
                                 controller: kawinController),
+                            SizedBox(
+                              height: 5.h,
+                            ),
+                            DropdownField(context,
+                              label: "Pekerjaan",
+                              options: ["PELAJAR", "BURUH", "KARYAWAN SWASTA", "PNS", "WIRASWASTA"],
+                              value: selectedPekerjaan
+                            ),
                             SizedBox(
                               height: 5.h,
                             ),
@@ -198,53 +258,36 @@ class _ResultScanState extends State<ResultScan> {
                                 ),
                               ],
                             ),
-                            DropdownField(context,
+                            TxtField(context,
                                 label: "Provinsi",
-                                options: [
-                                  "Yogya",
-                                  "Jawa Barat",
-                                  "Jawa Timur",
-                                  selectedProvince!
-                                ],
-                                value: selectedProvince),
+                                init: selectedProvince!,
+                                keyboardType: TextInputType.streetAddress,
+                                controller: provController),
                             SizedBox(
                               height: 5.h,
                             ),
-                            DropdownField(context,
+                            TxtField(context,
                                 label: "Kab./Kota",
-                                options: [
-                                  selectedKota!,
-                                  "BOYOLALI",
-                                  "SEMARANG",
-                                  "SRAGEN"
-                                ],
-                                value: selectedKota),
+                                keyboardType: TextInputType.streetAddress,
+                                init: selectedKota,
+                                controller: kotaController),
                             SizedBox(
                               height: 5.h,
                             ),
-                            DropdownField(context,
+                            TxtField(context,
                                 label: "Kecamatan",
-                                options: [
-                                  selectedKecamatan!,
-                                  "LAWEYAN",
-                                  "PASAR KLIWON",
-                                  "JEBRES",
-                                  "BANJARSARI",
-                                ],
-                                value: selectedKecamatan),
+                                init: selectedKecamatan,
+                                controller: kecamatanController,
+                                keyboardType: TextInputType.streetAddress),
                             SizedBox(
                               height: 5.h,
                             ),
-                            DropdownField(context,
+                            TxtField(context,
                                 label: "Kelurahan",
-                                options: [
-                                  selectedKelurahan!,
-                                  "LAWEYAN",
-                                  "PASAR KLIWON",
-                                  "JEBRES",
-                                  "BANJARSARI",
-                                ],
-                                value: selectedKelurahan),
+                                init: selectedKelurahan,
+                                controller: kelurahanController,
+                                keyboardType: TextInputType.streetAddress
+                                ),
                             SizedBox(
                               height: 5.h,
                             ),
@@ -266,22 +309,77 @@ class _ResultScanState extends State<ResultScan> {
 
                         // });
                       },
-                      child: Container(
-                        height: MediaQuery.of(context).size.height * 0.08,
-                        width: MediaQuery.of(context).size.width * 0.9,
-                        decoration: BoxDecoration(
-                            color: const Color.fromRGBO(23, 78, 171, 1.0),
-                            borderRadius: BorderRadius.circular(10.h)),
-                        child: Center(
-                          child: Text(
-                            "Simpan data",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontFamily: "Rubik",
-                                fontSize: 18.sp),
-                          ),
-                        ),
-                      ),
+                      child: FutureBuilder(
+                          future: prefController.getToken(),
+                          builder: (_, snap) => (snap.connectionState ==
+                                  ConnectionState.done)
+                              ? Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    onTap: () {
+                                      var formatted = "${selectedDate!.year}-${selectedDate!.month.toString().padLeft(2, '0')}-${selectedDate!.day.toString().padLeft(2, '0')}";
+                                      log("iki lo ${nikController.text}");
+                                      simpanController.insert(
+                                          model: AnggotaModel(
+                                            id: nikController.text,
+                                            nama: namaController.text,
+                                            no_telp: hpController.text,
+                                            tgl_lahir: formatted,
+                                            tempat_lahir: kotaController.text,
+                                            jenis_kelamin:
+                                                kelaminController.text,
+                                            pekerjaan: selectedPekerjaan,
+                                            bangsa: 'WNI',
+                                            negara: "Indonesia",
+                                            prov: provController.text,
+                                            kota: kotaController.text,
+                                            kecamatan: kecamatanController.text,
+                                            alamat:
+                                                "${alamatController.text},Rt ${rtController.text}/Rw ${rwController.text}",
+                                          ),
+                                          kk: kkController.text,
+                                          token: snap.data).then((value) {
+                                            (simpanController.isOk.value == true || simpanController.status.value == 200)? Get.to(() => KeluargaView()) :
+                                              showDialog(
+                                                context:context,
+                                                builder: (snap)=> const AlertDialog(
+                                                  title: Text("Kesalahan"),
+                                                  actions: [
+                                                    Center(
+                                                      child: Text("No. KK tidak terdaftar")
+                                                    )
+                                                  ],
+                                                ),
+                                              )
+                                            ;
+                                            simpanController.isOk.value = false;
+                                          });
+                                    },
+                                    child: (simpanController.isOk.value == false)? 
+                                    Container(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.08,
+                                      width: MediaQuery.of(context).size.width *
+                                          0.9,
+                                      decoration: BoxDecoration(
+                                          color: const Color.fromRGBO(
+                                              23, 78, 171, 1.0),
+                                          borderRadius:
+                                              BorderRadius.circular(10.h)),
+                                      child: Center(
+                                        child: Text(
+                                          "Simpan data",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontFamily: "Rubik",
+                                              fontSize: 18.sp),
+                                        ),
+                                      ),
+                                    ):CircularProgressIndicator(),
+                                  ),
+                                )
+                              : const CircularProgressIndicator()),
                     )
                   ],
                 ),
@@ -466,6 +564,7 @@ class _ResultScanState extends State<ResultScan> {
           TextFormField(
             // initialValue: init,
             controller: controller,
+            readOnly: true,
             onChanged: (String msg) {
               wkt = DateFormat("dd-MM-yyyy").format(selectedDate!);
               controller!.text = txtSelectDateController.onChange(wkt);
@@ -481,6 +580,7 @@ class _ResultScanState extends State<ResultScan> {
                           firstDate: DateTime(1965, 9, 30),
                           lastDate: DateTime(DateTime.now().year,
                               DateTime.now().month, DateTime.now().day));
+                      setState(() {});
                     },
                     icon: const Icon(
                       Icons.date_range,

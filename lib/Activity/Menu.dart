@@ -55,7 +55,8 @@ class _MenuState extends State<Menu> {
                     future: pref.getEmail(),
                     // future: shared(),
                     builder: (_, snapshot) {
-                    return (snapshot.connectionState == ConnectionState.done)? RichText(
+                    return (snapshot.connectionState == ConnectionState.done)?
+                     RichText(
                         text: TextSpan(
                             text: "Hi,\n",
                             style:
