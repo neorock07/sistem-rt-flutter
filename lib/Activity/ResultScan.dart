@@ -56,6 +56,7 @@ class _ResultScanState extends State<ResultScan> {
   String? rw;
   var initTime;
   DateTime? selectedDate;
+  bool isNull = false;
 
   @override
   void initState() {
@@ -67,51 +68,54 @@ class _ResultScanState extends State<ResultScan> {
         }
         log("${widget.text![i]} -> $i");
       }
+
+      rt = widget.text![20].split("/")[0];
+      rw = widget.text![20].split("/")[1];
+      nikController = TextEditingController(text: widget.text![9]);
+      namaController = TextEditingController(text: widget.text![16]);
+      alamatController = TextEditingController(text: widget.text![19]);
+      rtController = TextEditingController(text: int.parse(rt!).toString());
+      rwController = TextEditingController(text: int.parse(rw!).toString());
+      kodeController = TextEditingController(text: "57154");
+      tglController =
+          TextEditingController(text: widget.text![17].split(",")[1].trim());
+      kelaminController =
+          TextEditingController(text: widget.text![18].substring(0, 1));
+      kawinController = (widget.text![24].substring(0, 1) == "B")
+          ? TextEditingController(text: "BELUM KAWIN")
+          : TextEditingController(text: "KAWIN");
+      initTime = widget.text![17].split(",")[1].trim().split("-");
+      selectedDate = DateTime(int.parse(initTime[2]), int.parse(initTime[1]),
+          int.parse(initTime[0]));
+      selectedProvince = widget.text![11].substring(8);
+      provController = TextEditingController(text: selectedProvince);
+      selectedKota = widget.text![12].substring(5);
+      kotaController = TextEditingController(text: selectedKota);
+      selectedKecamatan = widget.text![22];
+      kecamatanController = TextEditingController(text: selectedKecamatan);
+      selectedKelurahan = widget.text![21];
+      kelurahanController = TextEditingController(text: selectedKelurahan);
+      log("pekerjaan ki coeg : ${widget.text![25].substring(0, 2)}");
+      switch (widget.text![25].substring(0, 2)) {
+        case "PE":
+          selectedPekerjaan = "PELAJAR";
+          break;
+        case "BU":
+          selectedPekerjaan = "BURUH";
+          break;
+        case "KA":
+          selectedPekerjaan = "KARYAWAN SWASTA";
+          break;
+        case "PN":
+          selectedPekerjaan = "PNS";
+          break;
+        case "WI":
+          selectedPekerjaan = "WIRASWASTA";
+          break;
+      }
     } catch (e) {
+      isNull = true;
       log(e.toString());
-    }
-
-    rt = widget.text![20].split("/")[0];
-    rw = widget.text![20].split("/")[1];
-    nikController = TextEditingController(text: widget.text![9]);
-    namaController = TextEditingController(text: widget.text![16]);
-    alamatController = TextEditingController(text: widget.text![19]);
-    rtController = TextEditingController(text: int.parse(rt!).toString());
-    rwController = TextEditingController(text: int.parse(rw!).toString());
-    kodeController = TextEditingController(text: "57154");
-    tglController =
-        TextEditingController(text: widget.text![17].split(",")[1].trim());
-    kelaminController =
-        TextEditingController(text: widget.text![18].substring(0, 1));
-    kawinController = (widget.text![24].substring(0, 1) == "B")
-        ? TextEditingController(text: "BELUM KAWIN")
-        : TextEditingController(text: "KAWIN");
-    initTime = widget.text![17].split(",")[1].trim().split("-");
-    selectedProvince = widget.text![11].substring(8);
-    provController = TextEditingController(text: selectedProvince);
-    selectedKota = widget.text![12].substring(5);
-    kotaController = TextEditingController(text: selectedKota);
-    selectedKecamatan = widget.text![22];
-    kecamatanController = TextEditingController(text: selectedKecamatan);
-    selectedKelurahan = widget.text![21];
-    kelurahanController = TextEditingController(text: selectedKelurahan);
-    switch (widget.text![25].substring(0,1)) {
-      case "PE":
-         selectedPekerjaan = "PELAJAR"; 
-        break;
-      case "BU":
-         selectedPekerjaan = "BURUH"; 
-        break;
-      case "KA":
-         selectedPekerjaan = "KARYAWAN SWASTA"; 
-        break;
-      case "PN":
-         selectedPekerjaan = "PNS"; 
-        break;        
-      case "WI":
-         selectedPekerjaan = "WIRASWASTA"; 
-        break;
-
     }
 
     super.initState();
@@ -119,14 +123,26 @@ class _ResultScanState extends State<ResultScan> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return  Scaffold(
       appBar: AppBar(
         title: const Text(
           "Cek Data",
           style: TextStyle(color: Colors.black, fontFamily: "Rubik"),
         ),
       ),
-      body: SingleChildScrollView(
+      body: (isNull == true)? 
+       Column(
+        children: [
+            const Center(child:
+             Text("Data tidak terambil dengan jelas!")),
+             Center(
+              child:ElevatedButton(
+                onPressed: ()=>Navigator.pop(context),
+                child: Text("Scan lagi"))
+             )
+             ],
+       ): 
+       SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.all(10.h),
           child: (widget.text!.length <= 0)
@@ -221,10 +237,15 @@ class _ResultScanState extends State<ResultScan> {
                               height: 5.h,
                             ),
                             DropdownField(context,
-                              label: "Pekerjaan",
-                              options: ["PELAJAR", "BURUH", "KARYAWAN SWASTA", "PNS", "WIRASWASTA"],
-                              value: selectedPekerjaan
-                            ),
+                                label: "Pekerjaan",
+                                options: [
+                                  "PELAJAR",
+                                  "BURUH",
+                                  "KARYAWAN SWASTA",
+                                  "PNS",
+                                  "WIRASWASTA"
+                                ],
+                                value: selectedPekerjaan),
                             SizedBox(
                               height: 5.h,
                             ),
@@ -260,7 +281,7 @@ class _ResultScanState extends State<ResultScan> {
                             ),
                             TxtField(context,
                                 label: "Provinsi",
-                                init: selectedProvince!,
+                                // init: selectedProvince!,
                                 keyboardType: TextInputType.streetAddress,
                                 controller: provController),
                             SizedBox(
@@ -286,8 +307,7 @@ class _ResultScanState extends State<ResultScan> {
                                 label: "Kelurahan",
                                 init: selectedKelurahan,
                                 controller: kelurahanController,
-                                keyboardType: TextInputType.streetAddress
-                                ),
+                                keyboardType: TextInputType.streetAddress),
                             SizedBox(
                               height: 5.h,
                             ),
@@ -317,66 +337,84 @@ class _ResultScanState extends State<ResultScan> {
                                   color: Colors.transparent,
                                   child: InkWell(
                                     onTap: () {
-                                      var formatted = "${selectedDate!.year}-${selectedDate!.month.toString().padLeft(2, '0')}-${selectedDate!.day.toString().padLeft(2, '0')}";
+                                      var formatted =
+                                          "${selectedDate!.year}-${selectedDate!.month.toString().padLeft(2, '0')}-${selectedDate!.day.toString().padLeft(2, '0')}";
                                       log("iki lo ${nikController.text}");
-                                      simpanController.insert(
-                                          model: AnggotaModel(
-                                            id: nikController.text,
-                                            nama: namaController.text,
-                                            no_telp: hpController.text,
-                                            tgl_lahir: formatted,
-                                            tempat_lahir: kotaController.text,
-                                            jenis_kelamin:
-                                                kelaminController.text,
-                                            pekerjaan: selectedPekerjaan,
-                                            bangsa: 'WNI',
-                                            negara: "Indonesia",
-                                            prov: provController.text,
-                                            kota: kotaController.text,
-                                            kecamatan: kecamatanController.text,
-                                            alamat:
-                                                "${alamatController.text},Rt ${rtController.text}/Rw ${rwController.text}",
-                                          ),
-                                          kk: kkController.text,
-                                          token: snap.data).then((value) {
-                                            (simpanController.isOk.value == true || simpanController.status.value == 200)? Get.to(() => KeluargaView()) :
-                                              showDialog(
-                                                context:context,
-                                                builder: (snap)=> const AlertDialog(
+                                      simpanController
+                                          .insert(
+                                              model: AnggotaModel(
+                                                id: nikController.text,
+                                                nama: namaController.text,
+                                                no_telp: hpController.text,
+                                                tgl_lahir: formatted,
+                                                tempat_lahir:
+                                                    kotaController.text,
+                                                jenis_kelamin:
+                                                    kelaminController.text,
+                                                pekerjaan: selectedPekerjaan,
+                                                bangsa: 'WNI',
+                                                negara: "Indonesia",
+                                                prov: provController.text,
+                                                kota: kotaController.text,
+                                                kecamatan:
+                                                    kecamatanController.text,
+                                                alamat:
+                                                    "${alamatController.text},Rt ${rtController.text}/Rw ${rwController.text}",
+                                              ),
+                                              kk: kkController.text,
+                                              token: snap.data)
+                                          .then((value) {
+                                        (simpanController.isOk.value == true ||
+                                                simpanController.status.value ==
+                                                    200)
+                                            ? Navigator.pushReplacement(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        KeluargaView()))
+                                            : showDialog(
+                                                context: context,
+                                                builder: (snap) =>
+                                                    const AlertDialog(
                                                   title: Text("Kesalahan"),
                                                   actions: [
                                                     Center(
-                                                      child: Text("No. KK tidak terdaftar")
-                                                    )
+                                                        child: Text(
+                                                            "No. KK tidak terdaftar"))
                                                   ],
                                                 ),
-                                              )
-                                            ;
-                                            simpanController.isOk.value = false;
-                                          });
+                                              );
+                                        simpanController.isOk.value = false;
+                                      });
                                     },
-                                    child: (simpanController.isOk.value == false)? 
-                                    Container(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.08,
-                                      width: MediaQuery.of(context).size.width *
-                                          0.9,
-                                      decoration: BoxDecoration(
-                                          color: const Color.fromRGBO(
-                                              23, 78, 171, 1.0),
-                                          borderRadius:
-                                              BorderRadius.circular(10.h)),
-                                      child: Center(
-                                        child: Text(
-                                          "Simpan data",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontFamily: "Rubik",
-                                              fontSize: 18.sp),
-                                        ),
-                                      ),
-                                    ):CircularProgressIndicator(),
+                                    child:
+                                        (simpanController.isOk.value == false)
+                                            ? Container(
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.08,
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.9,
+                                                decoration: BoxDecoration(
+                                                    color: const Color.fromRGBO(
+                                                        23, 78, 171, 1.0),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10.h)),
+                                                child: Center(
+                                                  child: Text(
+                                                    "Simpan data",
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontFamily: "Rubik",
+                                                        fontSize: 18.sp),
+                                                  ),
+                                                ),
+                                              )
+                                            : CircularProgressIndicator(),
                                   ),
                                 )
                               : const CircularProgressIndicator()),
@@ -458,6 +496,9 @@ class _ResultScanState extends State<ResultScan> {
           );
         }).toList(),
         onChanged: (String? str) {
+          setState(() {
+            value = str;
+          });
           // setState(() {
           //   print("previous ${this.selectedProvince}");
           //   print("selected $value");

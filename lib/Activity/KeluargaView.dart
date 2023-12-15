@@ -1,11 +1,15 @@
+import "dart:developer";
+
 import "package:anim_search_bar/anim_search_bar.dart";
 import "package:flutter/material.dart";
 import "package:flutter_screenutil/flutter_screenutil.dart";
 import "package:get/get.dart";
 import "package:sistem_rt/Activity/AddManual.dart";
 import "package:sistem_rt/Activity/AddNewKeluarga.dart";
+import "package:sistem_rt/Activity/DetailKeluarga.dart";
 import "package:sistem_rt/Controller/KepalaKKController/KepalaController.dart";
 import "package:sistem_rt/Controller/LoginController/PrefController.dart";
+import "package:sistem_rt/Controller/SearchController/SearchController.dart";
 
 import "../API/Model/KepalaKelModel/AdminModel.dart";
 
@@ -25,6 +29,8 @@ class _KeluargaViewState extends State<KeluargaView> {
   var prefController = Get.put(PrefController());
   var token;
   List<AdminModel?>? list_kk;
+  List<AdminModel?>? list_kk_new;
+  var bongkar = Get.put(BongkarController());
 
   Future<void> shared() async {
     // SharedPreferences pref = await SharedPreferences.getInstance();
@@ -68,7 +74,25 @@ class _KeluargaViewState extends State<KeluargaView> {
                           width: MediaQuery.of(context).size.width * 0.7,
                           textController: controller,
                           onSuffixTap: () {},
-                          onSubmitted: (String st) {},
+                          onSubmitted: (String st) {
+                           list_kk_new =  bongkar.Bongkar(st, list_kk!.cast<AdminModel>());
+                           log("list_kk : ${list_kk!.length} \n list_kk_new : ${list_kk_new!.length}"); 
+                           if(list_kk_new!.length == 0){
+                              showDialog(
+                                context: context,
+                                builder: (snap){
+                                  return const AlertDialog(
+                                    title: Text("Ooops!..."),
+                                    actions: [
+                                      Center(
+                                        child: Text("Sayangnya nggak ada datanya😢"),
+                                      )
+                                    ],
+                                  );
+                                }
+                                );  
+                           }
+                          },
                         ),
                       ),
                       Padding(
@@ -135,59 +159,67 @@ class _KeluargaViewState extends State<KeluargaView> {
                       padding: const EdgeInsets.all(8.0),
                       child: (list_kk!.isNotEmpty)
                           ? CardKK(context,
-                              kk: list_kk![index]!.id,
-                              name: list_kk![index]!.username)
+                              kk:  (list_kk_new != null )? list_kk_new![index]!.id  : list_kk![index]!.id,
+                              name: (list_kk_new != null)? list_kk_new![index]!.username :list_kk![index]!.username)
                           : const CircularProgressIndicator(),
                     );
-                  }, childCount: (list_kk != null) ? list_kk!.length : 0))
+                  }, childCount: (list_kk != null) ? (list_kk_new != null)? list_kk_new!.length : list_kk!.length : 0))
                 ],
               )
             : Center(child: CircularProgressIndicator()));
   }
 
   Widget CardKK(BuildContext context, {String? kk, String? name}) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.1,
-      width: MediaQuery.of(context).size.width * 0.6,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10.h), color: Colors.white),
-      child: Padding(
-        padding: EdgeInsets.all(5.h),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Align(
-                alignment: Alignment.topLeft,
-                child: Text(
-                  "#No.KK : $kk",
-                  style: TextStyle(color: Colors.grey, fontFamily: "Rubik"),
-                )),
-            Padding(
-              padding: EdgeInsets.all(8.0.h),
-              child: Row(
-                children: [
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.person_3,
-                        color: Color.fromRGBO(23, 78, 171, 1.0),
-                      ),
-                      SizedBox(
-                        width: 5.w,
-                      ),
-                      Text(
-                        "$name",
-                        style: TextStyle(
-                            fontFamily: "Helvetica",
-                            color: Colors.black,
-                            fontSize: 18.sp),
-                      )
-                    ],
-                  ),
-                ],
-              ),
-            )
-          ],
+    double? p;
+    return InkWell(
+      onTap: (){
+        p = 8.h;
+        Navigator.push(context, MaterialPageRoute(builder: (context) => DetailKeluarga(kk: kk)));
+
+      },
+      child: Container(
+        height: MediaQuery.of(context).size.height * 0.1,
+        width: MediaQuery.of(context).size.width * 0.6,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10.h), color: Colors.white),
+        child: Padding(
+          padding: EdgeInsets.all((p != null)? p : 5.h),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    "#No.KK : $kk",
+                    style: TextStyle(color: Colors.grey, fontFamily: "Rubik"),
+                  )),
+              Padding(
+                padding: EdgeInsets.all(8.0.h),
+                child: Row(
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.person_3,
+                          color: Color.fromRGBO(23, 78, 171, 1.0),
+                        ),
+                        SizedBox(
+                          width: 5.w,
+                        ),
+                        Text(
+                          "$name",
+                          style: TextStyle(
+                              fontFamily: "Helvetica",
+                              color: Colors.black,
+                              fontSize: 18.sp),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -224,3 +256,5 @@ class _KeluargaViewState extends State<KeluargaView> {
     );
   }
 }
+
+
