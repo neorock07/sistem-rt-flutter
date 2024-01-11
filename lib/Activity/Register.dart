@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sistem_rt/Activity/KeluargaView.dart';
 import 'package:sistem_rt/Controller/ObscureController.dart';
 
 import '../Controller/LoginController/PrefController.dart';
 import '../Controller/RegisterController/RegisterController.dart';
-import 'Menu.dart';
 
 class Register extends StatefulWidget {
   const Register({Key? key}) : super(key: key);
@@ -26,20 +23,19 @@ class _RegisterState extends State<Register> {
   final ObscureController obscureController = Get.put(ObscureController());
   final RegisterController registerController = Get.put(RegisterController());
 
- var pref = Get.put(PrefController());
+  var pref = Get.put(PrefController());
   String? token;
 
-  Future<void> shared() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    token = pref.getString("token");
-  }
+  // Future<void> shared() async {
+  //   SharedPreferences pref = await SharedPreferences.getInstance();
+  //   token = pref.getString("token");
+  // }
 
-  @override
-  void initState() {
-    super.initState();
-    shared();
-  }
-
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   shared();
+  // }
 
   Column ViewRegister(BuildContext context, {String? msg, String? btn_msg}) {
     return Column(
@@ -83,9 +79,7 @@ class _RegisterState extends State<Register> {
                             : null;
                       },
                       decoration: const InputDecoration(
-                        hintText: "No. Kk",
-                        label: Text("No. KK")
-                      ),
+                          hintText: "No. Kk", label: Text("No. KK")),
                       style: const TextStyle(fontFamily: "Rubik"),
                     ),
                   ),
@@ -102,9 +96,7 @@ class _RegisterState extends State<Register> {
                             : null;
                       },
                       decoration: const InputDecoration(
-                        hintText: "Email",
-                        label: Text("Email")
-                      ),
+                          hintText: "Email", label: Text("Email")),
                       style: const TextStyle(fontFamily: "Rubik"),
                     ),
                   ),
@@ -120,9 +112,7 @@ class _RegisterState extends State<Register> {
                             : null;
                       },
                       decoration: const InputDecoration(
-                        hintText: "Username",
-                        label: Text("Username")
-                      ),
+                          hintText: "Username", label: Text("Username")),
                       style: const TextStyle(fontFamily: "Rubik"),
                     ),
                   ),
@@ -168,15 +158,18 @@ class _RegisterState extends State<Register> {
                   color: Colors.transparent,
                   child: InkWell(
                     onTap: () async {
-                      registerController.register(
-                        kk: kkController.text,
-                        email: emailController.text,
-                        username: usernameController.text,
-                        password: passwdController.text,
-                        token: token
-                      ).then((value) => Navigator.push(context, 
-                      MaterialPageRoute(builder: (context) => const KeluargaView())
-                      ));
+                      registerController
+                          .register(
+                              kk: kkController.text,
+                              email: emailController.text,
+                              username: usernameController.text,
+                              password: passwdController.text,
+                              );
+                          // .then((value) => Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (context) => const KeluargaView())
+                          //         ));
                     },
                     splashColor: const Color.fromRGBO(23, 78, 171, 1.0),
                     child: AnimatedContainer(
@@ -201,7 +194,8 @@ class _RegisterState extends State<Register> {
                       ),
                     ),
                   ),
-                )
+                ),
+                
               ],
             ))
       ],

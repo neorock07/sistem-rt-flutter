@@ -44,7 +44,7 @@ class _ResultScanState extends State<ResultScan> {
   var simpanController = Get.put(DataDiriController());
   var prefController = Get.put(PrefController());
   var wilayahController = Get.put(WilayahController());
-
+  var pekerjaanController = TextEditingController();
   var rtController;
   var rwController;
   String? selectedProvince;
@@ -69,34 +69,34 @@ class _ResultScanState extends State<ResultScan> {
         log("${widget.text![i]} -> $i");
       }
 
-      rt = widget.text![20].split("/")[0];
-      rw = widget.text![20].split("/")[1];
-      nikController = TextEditingController(text: widget.text![9]);
-      namaController = TextEditingController(text: widget.text![16]);
-      alamatController = TextEditingController(text: widget.text![19]);
+      rt = widget.text![21].split("/")[0];
+      rw = widget.text![21].split("/")[1];
+      nikController = TextEditingController(text: widget.text![16]);
+      namaController = TextEditingController(text: widget.text![17]);
+      alamatController = TextEditingController(text: widget.text![20]);
       rtController = TextEditingController(text: int.parse(rt!).toString());
       rwController = TextEditingController(text: int.parse(rw!).toString());
       kodeController = TextEditingController(text: "57154");
       tglController =
-          TextEditingController(text: widget.text![17].split(",")[1].trim());
+          TextEditingController(text: widget.text![18].split(",")[1].trim());
       kelaminController =
-          TextEditingController(text: widget.text![18].substring(0, 1));
-      kawinController = (widget.text![24].substring(0, 1) == "B")
+          TextEditingController(text: widget.text![19].substring(0, 1));
+      kawinController = (widget.text![25].substring(0, 1) == "B")
           ? TextEditingController(text: "BELUM KAWIN")
           : TextEditingController(text: "KAWIN");
-      initTime = widget.text![17].split(",")[1].trim().split("-");
+      initTime = widget.text![18].split(",")[1].trim().split("-");
       selectedDate = DateTime(int.parse(initTime[2]), int.parse(initTime[1]),
           int.parse(initTime[0]));
-      selectedProvince = widget.text![11].substring(8);
+      selectedProvince = widget.text![14].substring(8);
       provController = TextEditingController(text: selectedProvince);
-      selectedKota = widget.text![12].substring(5);
+      selectedKota = widget.text![15].substring(5);
       kotaController = TextEditingController(text: selectedKota);
       selectedKecamatan = widget.text![22];
       kecamatanController = TextEditingController(text: selectedKecamatan);
-      selectedKelurahan = widget.text![21];
+      selectedKelurahan = widget.text![23];
       kelurahanController = TextEditingController(text: selectedKelurahan);
-      log("pekerjaan ki coeg : ${widget.text![25].substring(0, 2)}");
-      switch (widget.text![25].substring(0, 2)) {
+      log("pekerjaan ki coeg : ${widget.text![27].substring(0, 2)}");
+      switch (widget.text![27].substring(0, 2)) {
         case "PE":
           selectedPekerjaan = "PELAJAR";
           break;
@@ -113,6 +113,7 @@ class _ResultScanState extends State<ResultScan> {
           selectedPekerjaan = "WIRASWASTA";
           break;
       }
+      pekerjaanController.text = selectedPekerjaan!;
     } catch (e) {
       isNull = true;
       log(e.toString());
@@ -138,7 +139,7 @@ class _ResultScanState extends State<ResultScan> {
              Center(
               child:ElevatedButton(
                 onPressed: ()=>Navigator.pop(context),
-                child: Text("Scan lagi"))
+                child: const Text("Scan lagi"))
              )
              ],
        ): 
@@ -239,13 +240,14 @@ class _ResultScanState extends State<ResultScan> {
                             DropdownField(context,
                                 label: "Pekerjaan",
                                 options: [
+                                  "PILIH",
                                   "PELAJAR",
                                   "BURUH",
                                   "KARYAWAN SWASTA",
                                   "PNS",
                                   "WIRASWASTA"
                                 ],
-                                value: selectedPekerjaan),
+                                value: pekerjaanController),
                             SizedBox(
                               height: 5.h,
                             ),
@@ -339,19 +341,25 @@ class _ResultScanState extends State<ResultScan> {
                                     onTap: () {
                                       var formatted =
                                           "${selectedDate!.year}-${selectedDate!.month.toString().padLeft(2, '0')}-${selectedDate!.day.toString().padLeft(2, '0')}";
+                                      DateTime tm = DateTime.parse(formatted);
+                                      var unix = tm.millisecondsSinceEpoch;
+
                                       log("iki lo ${nikController.text}");
+                                      log("iki lo ${pekerjaanController.text}");
+                                      log("iki lo ${kawinController.text}");
                                       simpanController
                                           .insert(
                                               model: AnggotaModel(
                                                 id: nikController.text,
                                                 nama: namaController.text,
                                                 no_telp: hpController.text,
-                                                tgl_lahir: formatted,
+                                                tgl_lahir: unix,
                                                 tempat_lahir:
                                                     kotaController.text,
                                                 jenis_kelamin:
                                                     kelaminController.text,
-                                                pekerjaan: selectedPekerjaan,
+                                                pekerjaan: pekerjaanController.text,
+                                                isKawin: kawinController.text,
                                                 bangsa: 'WNI',
                                                 negara: "Indonesia",
                                                 prov: provController.text,
@@ -485,9 +493,9 @@ class _ResultScanState extends State<ResultScan> {
   }
 
   Widget DropdownField(BuildContext context,
-      {String? label, List<String>? options, String? value}) {
+      {String? label, List<String>? options, TextEditingController? value}) {
     return DropdownButtonFormField(
-        value: value,
+        value: value!.text,
         decoration: InputDecoration(label: Text("$label")),
         items: options!.map((String option) {
           return DropdownMenuItem<String>(
@@ -497,7 +505,7 @@ class _ResultScanState extends State<ResultScan> {
         }).toList(),
         onChanged: (String? str) {
           setState(() {
-            value = str;
+            value.text = str!;
           });
           // setState(() {
           //   print("previous ${this.selectedProvince}");

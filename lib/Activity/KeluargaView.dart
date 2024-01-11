@@ -4,9 +4,11 @@ import "package:anim_search_bar/anim_search_bar.dart";
 import "package:flutter/material.dart";
 import "package:flutter_screenutil/flutter_screenutil.dart";
 import "package:get/get.dart";
+import "package:sistem_rt/API/Model/AnggotaModel/AnggotaModel.dart";
 import "package:sistem_rt/Activity/AddManual.dart";
 import "package:sistem_rt/Activity/AddNewKeluarga.dart";
 import "package:sistem_rt/Activity/DetailKeluarga.dart";
+import "package:sistem_rt/Controller/AnggotaController/DetailKeluargaController.dart";
 import "package:sistem_rt/Controller/KepalaKKController/KepalaController.dart";
 import "package:sistem_rt/Controller/LoginController/PrefController.dart";
 import "package:sistem_rt/Controller/SearchController/SearchController.dart";
@@ -28,9 +30,11 @@ class _KeluargaViewState extends State<KeluargaView> {
   var kepalaController = Get.put(KepalaController());
   var prefController = Get.put(PrefController());
   var token;
+  var data;
   List<AdminModel?>? list_kk;
   List<AdminModel?>? list_kk_new;
   var bongkar = Get.put(BongkarController());
+  var detailController = Get.put(DetailKeluargaController());
 
   Future<void> shared() async {
     // SharedPreferences pref = await SharedPreferences.getInstance();
@@ -39,6 +43,9 @@ class _KeluargaViewState extends State<KeluargaView> {
       list_kk = value;
       setState(() {});
     });
+    if(kepalaController.raValid == true){
+      Navigator.pop(context);
+    }
     // return list_kk!;
   }
 
@@ -46,7 +53,7 @@ class _KeluargaViewState extends State<KeluargaView> {
   void initState() {
     super.initState();
     shared();
-
+    
     // list_kk = kepalaController.data;
   }
 
@@ -172,9 +179,21 @@ class _KeluargaViewState extends State<KeluargaView> {
   Widget CardKK(BuildContext context, {String? kk, String? name}) {
     double? p;
     return InkWell(
-      onTap: (){
+      onTap: () async {
         p = 8.h;
-        Navigator.push(context, MaterialPageRoute(builder: (context) => DetailKeluarga(kk: kk)));
+        // Map<String, dynamic> model;
+        FutureBuilder(
+          future: detailController.findById(id: kk).then((value) => data),
+          builder: (_, snap){
+            if(snap.connectionState == ConnectionState.waiting){
+              
+              // Get.snackbar("data", data.runtimeType.toString());
+            }
+            data = snap.data;
+            print(data.toString());
+            return Text("");
+          });
+        Navigator.push(context, MaterialPageRoute(builder: (context) => DetailKeluarga(kk: kk,)));
 
       },
       child: Container(
@@ -191,7 +210,7 @@ class _KeluargaViewState extends State<KeluargaView> {
                   alignment: Alignment.topLeft,
                   child: Text(
                     "#No.KK : $kk",
-                    style: TextStyle(color: Colors.grey, fontFamily: "Rubik"),
+                    style: const TextStyle(color: Colors.grey, fontFamily: "Rubik"),
                   )),
               Padding(
                 padding: EdgeInsets.all(8.0.h),

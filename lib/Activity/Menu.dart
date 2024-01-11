@@ -4,6 +4,7 @@ import "package:flutter/material.dart";
 import "package:flutter_screenutil/flutter_screenutil.dart";
 import "package:get/get.dart";
 import "package:shared_preferences/shared_preferences.dart";
+import "package:sistem_rt/Activity/EventView.dart";
 import "package:sistem_rt/Activity/KeluargaView.dart";
 import "package:sistem_rt/Activity/Profile.dart";
 import "package:sistem_rt/Activity/Register.dart";
@@ -102,7 +103,11 @@ class _MenuState extends State<Menu> {
                     name: "Keluarga",
                     page: const KeluargaView()),
                 CardMenu(context, icon: Icons.money, name: "Keuangan"),
-                CardMenu(context, icon: Icons.event, name: "Event"),
+                CardMenu(context,
+                 icon: Icons.event,
+                name: "Event",
+                page: const EventView()
+                ),
                 CardMenu(context,
                     icon: Icons.account_box,
                     name: "Admin",

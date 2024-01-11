@@ -2,9 +2,10 @@ class AnggotaModel {
     String? id;
     String? nama;
     String? no_telp;
-    String? tgl_lahir;
+    dynamic tgl_lahir;
     String? tempat_lahir;
     String? jenis_kelamin;
+    String? isKawin;
     String? pekerjaan;
     String? bangsa;
     String? negara;
@@ -19,6 +20,7 @@ class AnggotaModel {
       this.no_telp, 
       this.tgl_lahir,
       this.tempat_lahir, 
+      this.isKawin, 
       this.jenis_kelamin, 
       this.pekerjaan, 
       this.bangsa, 
@@ -38,6 +40,7 @@ class AnggotaModel {
         tempat_lahir: json['tempat_lahir'],
         jenis_kelamin: json['jenis_kelamin'],
         pekerjaan: json['pekerjaan'],
+        isKawin: json['status_kawin'],
         bangsa: json['bangsa'],
         negara: json['negara'],
         prov: json['prov'],

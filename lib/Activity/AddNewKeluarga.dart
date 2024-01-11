@@ -19,11 +19,11 @@ class AddNewKeluarga extends StatefulWidget {
 class _AddNewKeluargaState extends State<AddNewKeluarga> {
   CameraController? _camController;
   final textRecognizer = TextRecognizer(script: TextRecognitionScript.latin);
-  var condition = true.obs;
+  bool? condition;
 
   Future<void> initCamera() async {
     var cameras = await availableCameras();
-    _camController = CameraController(cameras[0], ResolutionPreset.medium);
+    _camController = CameraController(cameras[0], ResolutionPreset.veryHigh);
     await _camController!.initialize();
   }
 
@@ -62,7 +62,7 @@ class _AddNewKeluargaState extends State<AddNewKeluarga> {
           future: initCamera(),
           builder: (_, snapshot) => (snapshot.connectionState ==
                   ConnectionState.done)
-              ? (condition == true)? Column(
+              ? (condition == null || condition == true)? Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Align(
@@ -88,7 +88,7 @@ class _AddNewKeluargaState extends State<AddNewKeluarga> {
                           alignment: Alignment.topCenter,
                           child: SizedBox(
                             height: MediaQuery.of(context).size.height *
-                                0.6 /
+                                0.9 /
                                 _camController!.value.aspectRatio,
                             width: MediaQuery.of(context).size.width * 0.9,
                             child: CameraPreview(_camController!),
@@ -140,9 +140,9 @@ class _AddNewKeluargaState extends State<AddNewKeluarga> {
             List<String> fg = teks.text.toString().split("\n").toList();
             // ignore: use_build_context_synchronously
             log("${fg.length}");
-            condition.value = false;
+            condition = false;
             if (fg.length > 1) {
-              condition.value = true;
+              condition = true;
               // ignore: use_build_context_synchronously
               await Navigator.push(
                   context,

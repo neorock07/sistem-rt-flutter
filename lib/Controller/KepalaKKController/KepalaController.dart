@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sistem_rt/API/Model/AnggotaModel/AnggotaModel.dart';
 import 'package:sistem_rt/API/Model/KepalaKelModel/AdminModel.dart';
 import 'package:sistem_rt/Controller/RefreshTokenController/RefreshTokenController.dart';
 
@@ -11,10 +12,12 @@ import '../../Utils/Ip.dart';
 
 class KepalaController extends GetxController {
   var ipAdd = Ip();
-  var data = <AdminModel>[].obs;
+  List<AdminModel>? data;
+  var dataAnggota = <AnggotaModel>[].obs;
   var newToken;
   var tokenBaru;
   var refController = Get.put(RefreshTokenController());
+  var raValid = false.obs;
 
   Future<List<AdminModel?>?> getData(String? token) async {
     var response = await http.get(
@@ -27,8 +30,8 @@ class KepalaController extends GetxController {
 
     if (response.statusCode == 200) {
       List<dynamic> raw = json.decode(response.body);
-      data.value = raw.map((e) => AdminModel.fromJson(e)).toList();
-      log("data yg diterima : ${data.value}");
+      data = raw.map((e) => AdminModel.fromJson(e)).toList();
+      log("data yg diterima : ${data}");
       refController.isTokenValid(token);
       return data;
     } else {
@@ -43,16 +46,19 @@ class KepalaController extends GetxController {
     String? refreshToken = pref.getString("refreshToken");
 
     if (refController.isTokenValid(token) == true) {
-        log("kudu ne valid");
-        return getData(token);
+      log("kudu ne valid");
+      return getData(token);
       // return data;
     } else {
+      raValid.value = true;
       log("nek ra valid kudune iki");
       refController.getRefreshToken(refreshToken!).then((value) {
         token = value!.token;
-        refreshToken = value!.refreshToken;
+        refreshToken = value.refreshToken;
         return getData(token);
       });
     }
   }
+
+  
 }

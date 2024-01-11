@@ -15,13 +15,13 @@ class RegisterController extends GetxController {
 
 
   Future<RegisterModel?> register(
-      {String? kk, String? email, String? password, String? username, String? token}) async {
+      {String? kk, String? email, String? password, String? username}) async {
     try {
       var response = await http.post(
           Uri.parse("${ipAdd.getType()}://${ipAdd.getIp()}/api/v1/auth/register"),
           headers: {
             "content-type": "application/json",
-             'Authorization': 'Bearer $token'
+            //  'Authorization': 'Bearer $token'
             },
           body: json.encode({
             "id": kk,
@@ -32,6 +32,7 @@ class RegisterController extends GetxController {
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = json.decode(response.body);
         log("msg : ${data['id']} | ${data['username']} | ${data['email']} ");
+        Get.snackbar("Berhasil", "berhasil menambahkan data");
         return model(RegisterModel.fromJson(data));
       } else {
         Get.snackbar("gagal", "Gagal menambahkan data");

@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:sistem_rt/Activity/Login.dart';
+import 'package:sistem_rt/Activity/Menu.dart';
 import 'package:sistem_rt/Controller/LoginController/PrefController.dart';
 import '../../API/Model/LoginModel/LoginModel.dart';
 import '../../Utils/Ip.dart';
@@ -35,17 +36,18 @@ class LoginController extends GetxController {
         log("msg : ${data['email']} | ${data['role']} | ${data['token']}");
         log("pref : ${prefController.getEmail()} | ${prefController.getToken()}");
         Get.snackbar("Sukses", "Login berhasil");
-
+        Get.to(()=>Menu());
         return model(LoginModel.fromJson(data));
       } else {
+        Get.to(() => Login());
         throw Exception("Gagal mengambil data");
         // return null;
       }
     } catch (e) {
+      Get.to(() => Login());
       Get.snackbar("Error", "Login gagal");
       log("msg : ${model.value.email} | ${model.value.token}");
       log("gagal mengambil data");
-      Get.to(() => Login());
     }
   }
 }

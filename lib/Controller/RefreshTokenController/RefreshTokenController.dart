@@ -41,6 +41,9 @@ class RefreshTokenController extends GetxController {
     int currTime = int.parse(DateTime.now().microsecondsSinceEpoch.toString().substring(0, 10));
     int expTime = jwtPayload['exp'];
     log("iki lo currTime : ${currTime} | exp : ${expTime}");
+    if(currTime > expTime){
+      Get.snackbar("Sesi Berakhir", "Token sudah tidak berlaku");
+    }
 
     return (currTime > expTime) ? false : true;
   }

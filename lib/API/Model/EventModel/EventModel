@@ -1,0 +1,51 @@
+class EventModel{
+    String? id;
+    String? filename;
+    String? fileUrl;
+    String? fileType;
+    String? title;
+    String? deskripsi;
+    String? lokasi;
+    dynamic? date;
+    String? penyelenggara;
+
+    EventModel(
+        {
+        this.id,  
+        this.filename,
+        this.fileUrl,
+        this.fileType,
+        this.title,
+        this.deskripsi, 
+        this.lokasi,
+        this.date, 
+        this.penyelenggara
+        }
+    ); 
+
+    // EventModel();
+
+    factory EventModel.fromJson(Map<String, dynamic> json){
+        return new EventModel(
+            id: json['id'],
+            filename: json['filename'],
+            fileUrl: json['fileUrl'],
+            fileType: json['fileType'],
+            title: json['title'],
+            deskripsi: json['deskripsi'],
+            lokasi: json['lokasi'],
+            date: json['date'],
+            penyelenggara: json['penyelenggara']
+        );
+    }
+}
+
+// "id": "6876fcdb-3e8a-4d58-b823-86c765578c2a",
+//         "filename": "WIN_20231124_14_15_43_Pro.jpg",
+//         "fileUrl": "http://localhost:8080/api/v1/events/download/6876fcdb-3e8a-4d58-b823-86c765578c2a",
+//         "fileType": "image/jpeg",
+//         "title": "22 januari",
+//         "deskripsi": "aku berteman iblis yang baik hati",
+//         "lokasi": "tirtonadi",
+//         "date": 1641015000000,
+//         "penyelenggara": "Kantata Takwa"

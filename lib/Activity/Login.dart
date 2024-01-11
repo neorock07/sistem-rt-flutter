@@ -125,12 +125,13 @@ class _LoginState extends State<Login> {
                                 
                               });
                           loginController.fetch(
-                              email: emailController.text,
-                              password: passwordController.text).then((value){
-                                Navigator.push(context, 
-                                MaterialPageRoute(builder: (context) => Menu()));
+                              email: emailController.text.trim(),
+                              password: passwordController.text);
+                              // .then((value){
+                              //   Navigator.push(context, 
+                              //   MaterialPageRoute(builder: (context) => Menu()));
                                 
-                              });
+                              // });
                         }),
                         SizedBox(
                           height: 10.h,

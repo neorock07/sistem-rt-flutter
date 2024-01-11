@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.CAMERA"/>
     <application
-        android:label="sistem_rt"
-        android:name="${applicationName}"
+        android:label="SIFORA"
+        android:name="SIFORA"
         >
         <activity
             android:name=".MainActivity"
