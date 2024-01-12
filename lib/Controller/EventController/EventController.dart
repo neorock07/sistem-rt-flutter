@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:get/get.dart';
 import 'package:sistem_rt/Utils/Ip.dart';
@@ -25,7 +26,7 @@ class EventController extends GetxController {
 
       try {
       var response = await http.get(
-        Uri.parse("${ipAdd.getType()}://${ipAdd.getIp()}/api/v1/events?page=$page&size=$size"),
+        Uri.parse("${ipAdd.getType()}://${ipAdd.getIp()}/api/events?page=$page&size=$size"),
         headers: {
           "content-type": "application/json",
         },
@@ -51,7 +52,7 @@ class EventController extends GetxController {
   Future<EventModel> findById(String id) async {
     try {
       var response = await http.get(
-        Uri.parse("${ipAdd.getType()}://${ipAdd.getIp()}/api/v1/events/content/$id"),
+        Uri.parse("${ipAdd.getType()}://${ipAdd.getIp()}/api/events/content/$id"),
         headers: {
           "content-type": "application/json",
         },
@@ -73,5 +74,43 @@ class EventController extends GetxController {
       throw Exception("error get data");
     } 
   }
+
+  Future<void> save(
+    File img,
+    String title,
+    String deskripsi,
+    String lokasi,
+    String date,
+    String penyelenggara
+     )async {
+      var request = http.MultipartRequest(
+          'POST',
+          Uri.parse("${ipAdd.getType()}://${ipAdd.getIp()}/api/events/upload") 
+      );
+
+      request.files.add(
+        await http.MultipartFile.fromPath("file", img.path)
+      );
+
+      request.fields['title'] = title;
+      request.fields['lokasi'] = lokasi;
+      request.fields['penyelenggara'] = penyelenggara;
+      request.fields['deskripsi'] = deskripsi;
+      request.fields['date'] = date;
+
+      try{
+        var response = await request.send();
+        if(response.statusCode == 200){
+           Get.snackbar("Berhasil Menyimpan", "Data berhasil disimpan"); 
+        }else{
+          log("kesalahan : ${response.statusCode}");
+          Get.snackbar("Gagal", "Gagal menyimpan");
+        }
+      }catch(e){
+          Get.snackbar("Gagal", "Kesalahan");
+          throw Exception("Kesalahan ");
+      }
+
+    } 
 
 }

@@ -1,11 +1,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.CAMERA"/>
+    
     <application
         android:label="SIFORA"
-        android:name="SIFORA"
+        android:name="${applicationName}"
         >
         <activity
             android:name=".MainActivity"
+            android:requestLegacyExternalStorage="true"
             android:exported="true"
             android:launchMode="singleTop"
             android:theme="@style/LaunchTheme"

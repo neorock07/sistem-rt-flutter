@@ -4,8 +4,10 @@ import "package:flutter/material.dart";
 import "package:flutter_screenutil/flutter_screenutil.dart";
 import "package:get/get.dart";
 import "package:shared_preferences/shared_preferences.dart";
+import "package:sistem_rt/Activity/AddKeuangan.dart";
 import "package:sistem_rt/Activity/EventView.dart";
 import "package:sistem_rt/Activity/KeluargaView.dart";
+import "package:sistem_rt/Activity/KeuanganView.dart";
 import "package:sistem_rt/Activity/Profile.dart";
 import "package:sistem_rt/Activity/Register.dart";
 
@@ -22,18 +24,18 @@ class _MenuState extends State<Menu> {
   var pref = Get.put(PrefController());
   String? user;
   String? ref;
+  String? role;
 
-  // Future<String?> shared() async {
-  //   SharedPreferences pref = await SharedPreferences.getInstance();
-  //   user = pref.getString("email")!.split("@gmail.com")[0];
-  //   ref = pref.getString("refreshToken");
-  //   return ref;
-  // }
+  Future<String?> shared() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    role = pref.getString("role")!;
+    return ref;
+  }
 
   @override
   void initState() {
     super.initState();
-    // shared();
+    shared();
     // user = pref.email;
   }
 
@@ -53,25 +55,27 @@ class _MenuState extends State<Menu> {
               Padding(
                   padding: EdgeInsets.only(top: 70.h, left: 20.dm),
                   child: FutureBuilder(
-                    future: pref.getEmail(),
-                    // future: shared(),
-                    builder: (_, snapshot) {
-                    return (snapshot.connectionState == ConnectionState.done)?
-                     RichText(
-                        text: TextSpan(
-                            text: "Hi,\n",
-                            style:
-                                TextStyle(fontSize: 17.sp, fontFamily: "Rubik"),
-                            children: [
-                          TextSpan(
-                              text: "${snapshot.data}",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontFamily: "Rubik",
-                                  fontSize: 20.sp,
-                                  fontWeight: FontWeight.bold))
-                        ])) : const CircularProgressIndicator();
-                  })),
+                      future: pref.getEmail(),
+                      // future: shared(),
+                      builder: (_, snapshot) {
+                        return (snapshot.connectionState ==
+                                ConnectionState.done)
+                            ? RichText(
+                                text: TextSpan(
+                                    text: "Hi,\n",
+                                    style: TextStyle(
+                                        fontSize: 17.sp, fontFamily: "Rubik"),
+                                    children: [
+                                    TextSpan(
+                                        text: "${snapshot.data}",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontFamily: "Rubik",
+                                            fontSize: 20.sp,
+                                            fontWeight: FontWeight.bold))
+                                  ]))
+                            : const CircularProgressIndicator();
+                      })),
               Padding(
                 padding: EdgeInsets.only(top: 70.h, right: 20.dm),
                 child: SizedBox(
@@ -102,16 +106,16 @@ class _MenuState extends State<Menu> {
                     icon: Icons.family_restroom,
                     name: "Keluarga",
                     page: const KeluargaView()),
-                CardMenu(context, icon: Icons.money, name: "Keuangan"),
                 CardMenu(context,
-                 icon: Icons.event,
-                name: "Event",
-                page: const EventView()
-                ),
+                    icon: Icons.money,
+                    name: "Keuangan",
+                    page: const KeuanganView()),
                 CardMenu(context,
+                    icon: Icons.event, name: "Event", page: const EventView()),
+                (role == "SUPERADMIN")? CardMenu(context,
                     icon: Icons.account_box,
                     name: "Admin",
-                    page: const Register()),
+                    page: const Register()) : Text(""),
               ],
             ),
           )

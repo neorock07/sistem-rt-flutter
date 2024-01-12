@@ -29,6 +29,7 @@ class _DetailEventState extends State<DetailEvent> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        
         backgroundColor: Colors.white,
         body: GetBuilder<EventController>(
           init: EventController(),
@@ -94,29 +95,7 @@ class _DetailEventState extends State<DetailEvent> {
                                 child: ListView(
                                   controller: scrollController,
                                   children: [
-                                    // SizedBox(
-                                    //   height: 1.h,
-                                    // ),
-                                    // Padding(
-                                    //   padding: EdgeInsets.only(right: 10.w),
-                                    //   child: Align(
-                                    //     alignment: Alignment.topRight,
-                                    //     child: IconButton.outlined(
-                                    //         onPressed: () {},
-                                    //         icon: Icon(
-                                    //           Icons.share,
-                                    //           color: Colors.grey,
-                                    //         )),
-                                    //   ),
-                                    // ),
-                                    // ElevatedButton(
-                                    //   onPressed: () {
-                                    //     _shareText(
-                                    //         'Hello, this is the text to share!');
-                                    //   },
-                                    //   child: Text('Share Text'),
-                                    // ),
-
+                                    
                                     Align(
                                       alignment: Alignment.topCenter,
                                       child: Column(

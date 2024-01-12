@@ -2,7 +2,9 @@ import 'package:anim_search_bar/anim_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sistem_rt/API/Model/EventModel/EventModel.';
+import 'package:sistem_rt/Activity/AddEvent.dart';
 import 'package:sistem_rt/Activity/DetailEvent.dart';
 import 'package:sistem_rt/Controller/EventController/EventController.dart';
 import 'package:sistem_rt/Controller/SearchController/SearchController.dart';
@@ -24,17 +26,34 @@ class _EventViewState extends State<EventView> {
   var bongkar = Get.put(BongkarController());
   List<EventModel?>? list_event_new = [];
 
+
+  String? role;
+
+  Future<void> shared() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    role = pref.getString("role")!;
+    // return ref;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    shared();
+    // user = pref.email;
+  }
   // String link =
   // "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtC_jDGW6CDoB6_COVdWKSXRH9DMcw9Vuwhg&usqp=CAU";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-         floatingActionButton: FloatingActionButton(
+         floatingActionButton: (role == "SUPERADMIN")? FloatingActionButton(
           backgroundColor: const Color.fromRGBO(23, 78, 171, 1.0),
-          onPressed: (){},
-          splashColor: Colors.blueAccent,
+          onPressed: (){
+            Get.to(() => const AddEvent());
+          },
+          splashColor: const Color.fromARGB(255, 109, 126, 154),
           child: const Icon(Icons.add, size: 30,color:Colors.white,),
-          ),
+          ) : null,
         appBar: AppBar(
           title: const Align(alignment: Alignment.topLeft, child: Text("Event")),
           toolbarHeight: 80.h,

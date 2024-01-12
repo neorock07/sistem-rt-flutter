@@ -13,7 +13,7 @@ class TokenVerifController extends GetxController{
 
   Future<bool> VerifSuper(String token)async{
       var response = await http.get(
-          Uri.parse("${ip.getType()}://${ip.getIp()}/api/v1/token-verif"),
+          Uri.parse("${ip.getType()}://${ip.getIp()}/api/token-verif"),
       );
       
       if(response.statusCode == 200){

@@ -4,6 +4,7 @@ import "package:anim_search_bar/anim_search_bar.dart";
 import "package:flutter/material.dart";
 import "package:flutter_screenutil/flutter_screenutil.dart";
 import "package:get/get.dart";
+import "package:shared_preferences/shared_preferences.dart";
 import "package:sistem_rt/API/Model/AnggotaModel/AnggotaModel.dart";
 import "package:sistem_rt/Activity/AddManual.dart";
 import "package:sistem_rt/Activity/AddNewKeluarga.dart";
@@ -36,14 +37,17 @@ class _KeluargaViewState extends State<KeluargaView> {
   var bongkar = Get.put(BongkarController());
   var detailController = Get.put(DetailKeluargaController());
 
+  String? role;
+
   Future<void> shared() async {
-    // SharedPreferences pref = await SharedPreferences.getInstance();
-    // token = pref.getString("token");
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    role = pref.getString("role")!;
+
     kepalaController.getAll().then((value) {
       list_kk = value;
       setState(() {});
     });
-    if(kepalaController.raValid == true){
+    if (kepalaController.raValid == true) {
       Navigator.pop(context);
     }
     // return list_kk!;
@@ -53,7 +57,7 @@ class _KeluargaViewState extends State<KeluargaView> {
   void initState() {
     super.initState();
     shared();
-    
+
     // list_kk = kepalaController.data;
   }
 
@@ -82,29 +86,30 @@ class _KeluargaViewState extends State<KeluargaView> {
                           textController: controller,
                           onSuffixTap: () {},
                           onSubmitted: (String st) {
-                           list_kk_new =  bongkar.Bongkar(st, list_kk!.cast<AdminModel>());
-                           log("list_kk : ${list_kk!.length} \n list_kk_new : ${list_kk_new!.length}"); 
-                           if(list_kk_new!.length == 0){
+                            list_kk_new = bongkar.Bongkar(
+                                st, list_kk!.cast<AdminModel>());
+                            log("list_kk : ${list_kk!.length} \n list_kk_new : ${list_kk_new!.length}");
+                            if (list_kk_new!.length == 0) {
                               showDialog(
-                                context: context,
-                                builder: (snap){
-                                  return const AlertDialog(
-                                    title: Text("Ooops!..."),
-                                    actions: [
-                                      Center(
-                                        child: Text("Sayangnya nggak ada datanya😢"),
-                                      )
-                                    ],
-                                  );
-                                }
-                                );  
-                           }
+                                  context: context,
+                                  builder: (snap) {
+                                    return const AlertDialog(
+                                      title: Text("Ooops!..."),
+                                      actions: [
+                                        Center(
+                                          child: Text(
+                                              "Sayangnya nggak ada datanya😢"),
+                                        )
+                                      ],
+                                    );
+                                  });
+                            }
                           },
                         ),
                       ),
                       Padding(
                         padding: EdgeInsets.only(right: 10.w),
-                        child: ElevatedButton(
+                        child: (role == "SUPERADMIN")? ElevatedButton(
                             onPressed: () {
                               showModalBottomSheet(
                                   context: context,
@@ -156,7 +161,7 @@ class _KeluargaViewState extends State<KeluargaView> {
                                 child: Icon(
                                   Icons.add,
                                   color: Colors.black,
-                                ))),
+                                ))) : null,
                       ),
                     ],
                   ),
@@ -166,11 +171,20 @@ class _KeluargaViewState extends State<KeluargaView> {
                       padding: const EdgeInsets.all(8.0),
                       child: (list_kk!.isNotEmpty)
                           ? CardKK(context,
-                              kk:  (list_kk_new != null )? list_kk_new![index]!.id  : list_kk![index]!.id,
-                              name: (list_kk_new != null)? list_kk_new![index]!.username :list_kk![index]!.username)
+                              kk: (list_kk_new != null)
+                                  ? list_kk_new![index]!.id
+                                  : list_kk![index]!.id,
+                              name: (list_kk_new != null)
+                                  ? list_kk_new![index]!.username
+                                  : list_kk![index]!.username)
                           : const CircularProgressIndicator(),
                     );
-                  }, childCount: (list_kk != null) ? (list_kk_new != null)? list_kk_new!.length : list_kk!.length : 0))
+                  },
+                          childCount: (list_kk != null)
+                              ? (list_kk_new != null)
+                                  ? list_kk_new!.length
+                                  : list_kk!.length
+                              : 0))
                 ],
               )
             : Center(child: CircularProgressIndicator()));
@@ -183,18 +197,21 @@ class _KeluargaViewState extends State<KeluargaView> {
         p = 8.h;
         // Map<String, dynamic> model;
         FutureBuilder(
-          future: detailController.findById(id: kk).then((value) => data),
-          builder: (_, snap){
-            if(snap.connectionState == ConnectionState.waiting){
-              
-              // Get.snackbar("data", data.runtimeType.toString());
-            }
-            data = snap.data;
-            print(data.toString());
-            return Text("");
-          });
-        Navigator.push(context, MaterialPageRoute(builder: (context) => DetailKeluarga(kk: kk,)));
-
+            future: detailController.findById(id: kk).then((value) => data),
+            builder: (_, snap) {
+              if (snap.connectionState == ConnectionState.waiting) {
+                // Get.snackbar("data", data.runtimeType.toString());
+              }
+              data = snap.data;
+              print(data.toString());
+              return Text("");
+            });
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => DetailKeluarga(
+                      kk: kk,
+                    )));
       },
       child: Container(
         height: MediaQuery.of(context).size.height * 0.1,
@@ -202,7 +219,7 @@ class _KeluargaViewState extends State<KeluargaView> {
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10.h), color: Colors.white),
         child: Padding(
-          padding: EdgeInsets.all((p != null)? p : 5.h),
+          padding: EdgeInsets.all((p != null) ? p : 5.h),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -210,7 +227,8 @@ class _KeluargaViewState extends State<KeluargaView> {
                   alignment: Alignment.topLeft,
                   child: Text(
                     "#No.KK : $kk",
-                    style: const TextStyle(color: Colors.grey, fontFamily: "Rubik"),
+                    style: const TextStyle(
+                        color: Colors.grey, fontFamily: "Rubik"),
                   )),
               Padding(
                 padding: EdgeInsets.all(8.0.h),
@@ -275,5 +293,3 @@ class _KeluargaViewState extends State<KeluargaView> {
     );
   }
 }
-
-
